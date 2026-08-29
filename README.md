@@ -13,7 +13,7 @@ Each database gets its own Postgres role that owns it and is the only role (besi
 Before you start, create a DNS **A record** (e.g. `db.example.com`) pointing at the server's IP. Ports **80**, **443** and **5432** must be reachable from the internet (check your DigitalOcean cloud firewall if you use one).
 
 ```bash
-git clone <this-repo> /opt/unlimited-db
+git clone https://github.com/asnewman/unlimited-db.git /opt/unlimited-db
 cd /opt/unlimited-db
 sudo ./install.sh
 ```
