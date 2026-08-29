@@ -31,8 +31,15 @@ fi
 # --- 1. Docker ---------------------------------------------------------------
 if ! command -v docker >/dev/null || ! docker compose version >/dev/null 2>&1; then
   echo "==> Installing Docker"
-  apt-get update -q
-  DEBIAN_FRONTEND=noninteractive apt-get install -y -q docker.io docker-compose-v2 openssl
+  # On a fresh cloud server, cloud-init and unattended-upgrades run apt in the
+  # background for the first few minutes and hold the dpkg lock. Wait for them.
+  if command -v cloud-init >/dev/null; then
+    echo "    Waiting for first-boot setup (cloud-init) to finish..."
+    cloud-init status --wait >/dev/null 2>&1 || true
+  fi
+  APT_WAIT="-o DPkg::Lock::Timeout=600"
+  apt-get $APT_WAIT update -q
+  DEBIAN_FRONTEND=noninteractive apt-get $APT_WAIT install -y -q docker.io docker-compose-v2 openssl
 fi
 systemctl enable --now docker >/dev/null
 
